@@ -1,15 +1,34 @@
-Source: template-repository
-Section: unknown
+Source: golang-github-miekg-pkcs11
+Maintainer: Debian Go Packaging Team <team+pkg-go@tracker.debian.org>
+Uploaders: Arnaud Rebillout <elboulangero@gmail.com>,
+           Tim Potter <tpot@hpe.com>,
+Section: golang
+Testsuite: autopkgtest-pkg-go
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Build-Depends: debhelper-compat (= 13),
+               dh-golang,
+               golang-go,
+               libltdl-dev,
+               libnss3-dev,
+               libsofthsm2,
+               pkg-config,
+               softhsm2,
+Standards-Version: 4.6.1
+Vcs-Browser: https://salsa.debian.org/go-team/packages/golang-github-miekg-pkcs11
+Vcs-Git: https://salsa.debian.org/go-team/packages/golang-github-miekg-pkcs11.git
+Homepage: https://github.com/miekg/pkcs11
+Rules-Requires-Root: no
+XS-Go-Import-Path: github.com/miekg/pkcs11
 
-Package: template-repository
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Package: golang-github-miekg-pkcs11-dev
+Architecture: all
+Depends: libltdl-dev,
+         libnss3-dev,
+         pkg-config,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: pkcs11 wrapper for Go
+ This is a Go implementation of the PKCS#11 API. It wraps the library closely,
+ but uses Go idiom were it makes sense. It has been tested with SoftHSM.
+ .
+ This package contains the source.

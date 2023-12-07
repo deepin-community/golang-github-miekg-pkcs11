@@ -1,0 +1,70 @@
+--- a/parallel_test.go
++++ b/parallel_test.go
+@@ -23,9 +23,9 @@ import (
+ 	"testing"
+ )
+ 
+ var (
+-	module          = "/usr/lib/softhsm/libsofthsm.so"
++	module          = "/usr/lib/softhsm/libsofthsm2.so"
+ 	tokenLabel      = "softhsm token"
+ 	privateKeyLabel = "my key"
+ 	pin             = "1234"
+ )
+--- a/pkcs11_test.go
++++ b/pkcs11_test.go
+@@ -3,9 +3,9 @@
+ 
+ package pkcs11
+ 
+ // These tests depend on SoftHSM and the library being in
+-// in /usr/lib/softhsm/libsofthsm.so
++// in /usr/lib/softhsm/libsofthsm2.so
+ 
+ import (
+ 	"bytes"
+ 	"fmt"
+@@ -17,16 +17,16 @@ import (
+ 
+ /*
+ This test supports the following environment variables:
+ 
+-* SOFTHSM_LIB: complete path to libsofthsm.so
++* SOFTHSM_LIB: complete path to libsofthsm2.so
+ * SOFTHSM_TOKENLABEL
+ * SOFTHSM_PRIVKEYLABEL
+ * SOFTHSM_PIN
+ */
+ 
+ func setenv(t *testing.T) *Ctx {
+-	lib := "/usr/lib/softhsm/libsofthsm.so"
++	lib := "/usr/lib/softhsm/libsofthsm2.so"
+ 	if x := os.Getenv("SOFTHSM_LIB"); x != "" {
+ 		lib = x
+ 	}
+ 	t.Logf("loading %s", lib)
+@@ -37,12 +37,9 @@ func setenv(t *testing.T) *Ctx {
+ 	return p
+ }
+ 
+ func TestSetenv(t *testing.T) {
+-	wd, _ := os.Getwd()
+-	os.Setenv("SOFTHSM_CONF", wd+"/softhsm.conf")
+-
+-	lib := "/usr/lib/softhsm/libsofthsm.so"
++	lib := "/usr/lib/softhsm/libsofthsm2.so"
+ 	if x := os.Getenv("SOFTHSM_LIB"); x != "" {
+ 		lib = x
+ 	}
+ 	p := New(lib)
+@@ -476,9 +473,9 @@ func testEncryptUpdate(t *testing.T, p *
+ 
+ // ExampleSign shows how to sign some data with a private key.
+ // Note: error correction is not implemented in this example.
+ func ExampleCtx_Sign() {
+-	lib := "/usr/lib/softhsm/libsofthsm.so"
++	lib := "/usr/lib/softhsm/libsofthsm2.so"
+ 	if x := os.Getenv("SOFTHSM_LIB"); x != "" {
+ 		lib = x
+ 	}
+ 	p := New(lib)
