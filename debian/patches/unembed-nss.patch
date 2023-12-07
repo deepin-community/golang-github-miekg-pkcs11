@@ -1,0 +1,65 @@
+Description: remove embedded pkcs11*.h code and use libnss instead
+Forwarded: no
+Author: Tianon Gravi <tianon@debian.org>
+
+--- a/pkcs11go.h
++++ b/pkcs11go.h
+@@ -6,20 +6,16 @@
+ #define CK_PTR *
+ #ifndef NULL_PTR
+ #define NULL_PTR 0
+ #endif
+-#define CK_DEFINE_FUNCTION(returnType, name) returnType name
+-#define CK_DECLARE_FUNCTION(returnType, name) returnType name
+-#define CK_DECLARE_FUNCTION_POINTER(returnType, name) returnType (* name)
+-#define CK_CALLBACK_FUNCTION(returnType, name) returnType (* name)
+ 
+ #include <unistd.h>
+ #ifdef PACKED_STRUCTURES
+ # pragma pack(push, 1)
+-# include "pkcs11.h"
++# include <pkcs11.h>
+ # pragma pack(pop)
+ #else
+-# include "pkcs11.h"
++# include <pkcs11.h>
+ #endif
+ 
+ // Copy of CK_INFO but with default alignment (not packed). Go hides unaligned
+ // struct fields so copying to an aligned struct is necessary to read CK_INFO
+--- a/params.go
++++ b/params.go
+@@ -4,8 +4,9 @@
+ 
+ package pkcs11
+ 
+ /*
++#cgo pkg-config: nss
+ #include <stdlib.h>
+ #include <string.h>
+ #include "pkcs11go.h"
+ 
+--- a/types.go
++++ b/types.go
+@@ -4,8 +4,9 @@
+ 
+ package pkcs11
+ 
+ /*
++#cgo pkg-config: nss
+ #include <stdlib.h>
+ #include <string.h>
+ #include "pkcs11go.h"
+ 
+--- a/pkcs11.go
++++ b/pkcs11.go
+@@ -10,8 +10,9 @@ package pkcs11
+ // * Go's uint size == PKCS11's CK_ULONG size
+ // * CK_ULONG never overflows an Go int
+ 
+ /*
++#cgo pkg-config: nss
+ #cgo windows CFLAGS: -DPACKED_STRUCTURES
+ #cgo linux LDFLAGS: -ldl
+ #cgo darwin LDFLAGS: -ldl
+ #cgo openbsd LDFLAGS: -ldl

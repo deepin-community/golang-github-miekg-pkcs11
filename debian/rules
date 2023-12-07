@@ -1,4 +1,30 @@
 #!/usr/bin/make -f
 
+export DH_GOLANG_INSTALL_EXTRA := softhsm.conf softhsm2.conf test_data
+
 %:
-	dh $@
+	dh $@ --builddirectory=_build --buildsystem=golang --with=golang
+
+# Create token for unit tests in temporary directory
+
+export SOFTHSM2_CONF := $(CURDIR)/debian/softhsm2.conf
+
+$(SOFTHSM2_CONF):
+	echo "directories.tokendir = $(CURDIR)/debian/tmp" > debian/softhsm2.conf
+	echo "objectstore.backend = file" >> debian/softhsm2.conf
+	echo "log.level = INFO" >> debian/softhsm2.conf
+
+override_dh_auto_test: $(SOFTHSM2_CONF)
+	mkdir -p debian/tmp
+	softhsm2-util --init-token --slot 0  --label test --pin 1234 --so-pin 1234
+	dh_auto_test
+	rm -rf debian/tmp
+
+override_dh_auto_install:
+	cd _build/src/github.com/miekg/pkcs11/test_data && \
+		find \( -name generation -or -name token.lock \) -delete
+	dh_auto_install
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f $(SOFTHSM2_CONF)
